@@ -141,6 +141,7 @@ typedef NS_ENUM(NSUInteger, iRateErrorCode)
 @property (nonatomic, strong) NSDate *lastReminded;
 @property (nonatomic, assign) NSUInteger usesCount;
 @property (nonatomic, assign) NSUInteger eventCount;
+@property (nonatomic, assign) NSUInteger remindCount;
 @property (nonatomic, readonly) float usesPerWeek;
 @property (nonatomic, assign) BOOL declinedThisVersion;
 @property (nonatomic, readonly) BOOL declinedAnyVersion;

@@ -58,6 +58,7 @@ static NSString *const iRateAppStoreIDKey = @"iRateAppStoreID";
 static NSString *const iRateRatedVersionKey = @"iRateRatedVersionChecked";
 static NSString *const iRateDeclinedVersionKey = @"iRateDeclinedVersion";
 static NSString *const iRateLastRemindedKey = @"iRateLastReminded";
+static NSString *const iRateRemindCountKey = @"iRateRemindCount";
 static NSString *const iRateLastVersionUsedKey = @"iRateLastVersionUsed";
 static NSString *const iRateFirstUsedKey = @"iRateFirstUsed";
 static NSString *const iRateUseCountKey = @"iRateUseCount";
@@ -362,6 +363,17 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
 - (void)setEventCount:(NSUInteger)count
 {
     [[NSUserDefaults standardUserDefaults] setInteger:(NSInteger)count forKey:iRateEventCountKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (NSUInteger)remindCount
+{
+    return [[NSUserDefaults standardUserDefaults] integerForKey:iRateRemindCountKey];
+}
+
+- (void)setRemindCount:(NSUInteger)count
+{
+    [[NSUserDefaults standardUserDefaults] setObject:@(count) forKey:iRateRemindCountKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -1124,6 +1136,8 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
 {
     //ignore this version
     self.declinedThisVersion = YES;
+    
+    self.remindCount = 0;
 
     //log event
     [self.delegate iRateUserDidDeclineToRateApp];
@@ -1131,7 +1145,11 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
 
 - (void)remindLater
 {
+    // Reset remind counter
+    self.remindCount = 0;
+    
     //remind later
+    self.remindCount++;
     self.lastReminded = [NSDate date];
 
     //log event
@@ -1142,6 +1160,9 @@ static NSString *const iRateMacAppStoreURLFormat = @"macappstore://itunes.apple.
 {
     //mark as rated
     self.ratedThisVersion = YES;
+    
+    // Reset remind counter
+    self.remindCount = 0;
 
     //log event
     [self.delegate iRateUserDidAttemptToRateApp];
